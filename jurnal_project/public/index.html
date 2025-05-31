@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Selamat Datang di Portal Jurnal Ilmiah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+    <a href="daftar-jurnal.html"><i class="fas fa-book-open"></i> Daftar Jurnal</a>
+    <a href="login.html" id="loginLink"><i class="fas fa-sign-in-alt"></i> Login</a>
+    <a href="register.html" id="registerLink"><i class="fas fa-user-plus"></i> Register</a>
+    <a href="profile.html" id="profileLink" style="display:none;"><i class="fas fa-user-circle"></i> Profile</a>
+    <a href="home.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="about.html" class="active"><i class="fas fa-info-circle"></i> Tentang Kami</a>
+    <a href="#" id="logoutLink" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+
+  <header class="hero-section content-container">
+    <div class="hero-content">
+      <h1>Selamat Datang di Portal Jurnal Ilmiah Kami</h1>
+      <p>Akses ribuan jurnal berkualitas tinggi dari berbagai disiplin ilmu. Temukan sumber daya penelitian terbaru untuk mendukung studi dan inovasi Anda.</p>
+      <div class="hero-buttons">
+        <a href="daftar-jurnal.html" class="btn btn-primary"><i class="fas fa-search"></i> Telusuri Jurnal</a>
+        <a href="register.html" class="btn btn-secondary"><i class="fas fa-user-plus"></i> Bergabung Sekarang</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="about-section content-container">
+    <h2><i class="fas fa-info-circle"></i> Tentang Kami</h2>
+    <p>Kami adalah platform digital yang berdedikasi untuk menyediakan akses mudah dan cepat ke berbagai publikasi ilmiah. Misi kami adalah mendukung komunitas akademik dan peneliti dengan menyajikan jurnal-jurnal terkini dan relevan dari seluruh dunia.</p>
+    <p>Dengan antarmuka yang ramah pengguna, Anda dapat dengan mudah mencari, membaca, dan mengelola koleksi jurnal favorit Anda. Kami berkomitmen untuk integritas ilmiah dan inovasi.</p>
+  </section>
+
+  <section class="features-section content-container">
+    <h2><i class="fas fa-cogs"></i> Fitur Unggulan Kami</h2>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <i class="fas fa-database"></i>
+        <h3>Basis Data Luas</h3>
+        <p>Akses ke koleksi jurnal dari berbagai penerbit dan institusi terkemuka.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-filter"></i>
+        <h3>Pencarian Cerdas</h3>
+        <p>Temukan jurnal yang Anda butuhkan dengan filter dan kategori yang akurat.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-download"></i>
+        <h3>Unduh Mudah</h3>
+        <p>Unduh artikel dalam format PDF untuk dibaca secara offline.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-bookmark"></i>
+        <h3>Kelola Favorit</h3>
+        <p>Simpan jurnal-jurnal penting ke daftar favorit Anda untuk akses cepat.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section content-container text-center">
+    <h2>Siap untuk Memulai Penelitian Anda?</h2>
+    <p>Daftar sekarang dan mulailah menjelajahi dunia pengetahuan.</p>
+    <a href="register.html" class="btn btn-primary btn-large"><i class="fas fa-user-plus"></i> Daftar Gratis</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Portal Jurnal Ilmiah. Hak Cipta Dilindungi Undang-Undang.</p>
+  </footer>
+
+  <script>
+    // Logic untuk navbar (login/logout/profile)
+    async function updateNavbar() {
+      const loginLink = document.getElementById('loginLink');
+      const registerLink = document.getElementById('registerLink');
+      const profileLink = document.getElementById('profileLink');
+      const logoutLink = document.getElementById('logoutLink');
+
+      try {
+        const res = await fetch('http://localhost:3000/api/me', {
+          credentials: 'include'
+        });
+
+        if (!res.ok) throw new Error('Not logged in');
+        const user = await res.json();
+        // console.log("User aktif:", user); // Bisa di-uncomment untuk debugging
+
+        loginLink.style.display = 'none';
+        registerLink.style.display = 'none';
+        profileLink.style.display = 'flex';
+        logoutLink.style.display = 'flex';
+      } catch (err) {
+        // console.error('Error fetching user status:', err); // Bisa di-uncomment untuk debugging
+        loginLink.style.display = 'flex';
+        registerLink.style.display = 'flex';
+        profileLink.style.display = 'none';
+        logoutLink.style.display = 'none';
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateNavbar();
+    });
+
+    document.getElementById('logoutLink')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch('http://localhost:3000/api/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        if (res.ok) {
+          alert('Berhasil logout');
+          updateNavbar();
+          window.location.href = 'login.html'; // Redirect ke halaman login setelah logout
+        } else {
+            alert('Gagal logout. Silakan coba lagi.');
+        }
+      } catch (err) {
+        console.error('Gagal logout:', err);
+        alert('Terjadi kesalahan saat logout.');
+      }
+    });
+  </script>
+</body>
+</html>
