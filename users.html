@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Manajemen Pengguna</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/users.css"> </head>
+<body>
+  <h1>Daftar Pengguna</h1>
+  <input type="text" id="searchInput" class="form-control my-3" placeholder="Cari nama atau email...">
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Pengguna</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editUserId">
+            <div class="mb-3">
+              <label for="editName" class="form-label">Nama</label>
+              <input type="text" class="form-control" id="editName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editRole" class="form-label">Role</label>
+              <select class="form-select" id="editRole" required>
+                <option value="admin">Admin</option>
+                <option value="author">Author</option>
+                <option value="reviewer">Reviewer</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const userTable = document.getElementById('userTable');
+    const searchInput = document.getElementById('searchInput');
+    let allUsers = [];
+
+    async function fetchUsers() {
+      try {
+        const res = await fetch('http://localhost:3000/api/users', { credentials: 'include' });
+        if (!res.ok) throw await res.json();
+        allUsers = await res.json();
+        renderTable(allUsers);
+      } catch (err) {
+        alert(err.error || 'Gagal mengambil data');
+      }
+    }
+
+    function renderTable(users) {
+      userTable.innerHTML = '';
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>${user.role}</td>
+          <td class="action-btns">
+            <button class="btn btn-sm btn-warning" onclick="openEdit(${user.id})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">Hapus</button>
+          </td>
+        `;
+        userTable.appendChild(row);
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        u.name.toLowerCase().includes(keyword) || u.email.toLowerCase().includes(keyword)
+      );
+      renderTable(filtered);
+    });
+
+    function openEdit(id) {
+      const user = allUsers.find(u => u.id === id);
+      if (!user) return;
+      document.getElementById('editUserId').value = user.id;
+      document.getElementById('editName').value = user.name;
+      document.getElementById('editRole').value = user.role;
+      new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('editUserId').value;
+      const name = document.getElementById('editName').value;
+      const role = document.getElementById('editRole').value;
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, role })
+        });
+        if (!res.ok) throw await res.json();
+        await fetchUsers();
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+      } catch (err) {
+        alert(err.error || 'Gagal edit user');
+      }
+    });
+
+    async function deleteUser(id) {
+      if (!confirm('Yakin ingin menghapus pengguna ini?')) return;
+      try {
+        const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        if (!res.ok) throw await res.json();
+        await fetchUsers();
+      } catch (err) {
+        alert(err.error || 'Gagal hapus user');
+      }
+    }
+
+    fetchUsers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #a8e063, #4bb373); /* Green gradient background */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  color: #333;
+}
+
+/* Container for the form */
+.container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* Heading */
+h1 {
+  color: #2e7d32; /* Darker green for heading */
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 4px;
+  background-color: #a8e063; /* Light green underline */
+  border-radius: 2px;
+}
+
+/* Form Styling */
+form {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 1.05em;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #4CAF50; /* Green border on focus */
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Light green shadow on focus */
+  outline: none;
+}
+
+textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 100px;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  font-size: 1em;
+  color: #555;
+}
+
+/* Button Styling */
+button[type="submit"] {
+  background-color: #4CAF50; /* Green button */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049; /* Darker green on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Message Area */
+#message {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.3s ease;
+}
+
+/* Message success/error states (JavaScript will add these classes) */
+#message.success {
+  background-color: #e8f5e9; /* Light green background */
+  color: #2e7d32; /* Dark green text */
+  opacity: 1;
+}
+
+#message.error {
+  background-color: #ffebee; /* Light red background */
+  color: #c62828; /* Dark red text */
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding: 25px;
+    margin: 20px; /* Add some margin on smaller screens */
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  input[type="text"],
+  textarea,
+  button[type="submit"] {
+    font-size: 0.95em;
+    padding: 10px 15px;
+  }
+}

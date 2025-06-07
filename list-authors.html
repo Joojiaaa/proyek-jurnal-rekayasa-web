@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar Penulis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/authors-list.css"> </head>
+<body>
+  <h1>Daftar Penulis</h1>
+  <div id="authorsList">Loading...</div>
+
+  <script>
+    async function loadAuthors() {
+      try {
+        const res = await fetch('http://localhost:3000/api/authors');
+        const authors = await res.json();
+
+        if (!Array.isArray(authors)) {
+          document.getElementById('authorsList').innerText = '❌ Data tidak valid';
+          return;
+        }
+
+        const list = authors.map(author => `
+          <div class="author-card"> ${author.photo ? `<img src="http://localhost:3000/uploads/${author.photo}" alt="${author.name}">` : ''}
+            <h3>${author.name}</h3>
+            <p>${author.bio || 'Tidak ada bio tersedia.'}</p>
+          </div>
+        `).join('');
+
+        document.getElementById('authorsList').innerHTML = list;
+      } catch (err) {
+        console.error("Error loading authors:", err); // Log error untuk debugging
+        document.getElementById('authorsList').innerText = '❌ Gagal memuat penulis. Pastikan server berjalan dan ada data.';
+      }
+    }
+
+    loadAuthors();
+  </script>
+</body>
+</html>

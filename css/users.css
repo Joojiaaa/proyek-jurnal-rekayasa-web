@@ -1,0 +1,231 @@
+/* Definisi Variabel Warna (Palet Hijau Modern & Minimalis) */
+:root {
+    --primary-green: #28a745; /* Hijau utama yang lebih cerah dan modern */
+    --dark-green: #1e8449;    /* Hijau gelap untuk judul, teks success */
+    --light-green: #e6f7ed;   /* Hijau sangat terang untuk latar belakang, success message */
+    --gradient-start-green: #4CAF50; /* Awal gradient background */
+    --gradient-end-green: #86f4bf; /* Akhir gradient background (sentuhan biru kehijauan untuk kesan segar) */
+    --text-dark: #333;        /* Warna teks default yang kuat */
+    --text-medium: #555;      /* Warna teks sekunder untuk label */
+    --border-light: #e0e0e0;  /* Warna border input default yang sangat halus */
+    --error-bg: #ffebee;      /* Latar belakang error */
+    --error-text: #c62828;    /* Teks error */
+    --white: #ffffff;         /* Putih */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Shadow yang lebih halus */
+    --shadow-medium: rgba(0, 0, 0, 0.12); /* Shadow yang sedikit lebih kuat */
+}
+
+/* Global Styles */
+body {
+    font-family: 'Inter', sans-serif; /* Menggunakan font Inter yang bersih */
+    background: linear-gradient(135deg, var(--gradient-start-green), var(--gradient-end-green)); /* Gradien segar */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text-dark);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Container for the form */
+.container {
+    background-color: var(--white);
+    padding: 40px;
+    border-radius: 8px; /* Sudut sedikit lebih tajam */
+    box-shadow: 0 6px 20px var(--shadow-medium); /* Shadow lebih halus dan modern */
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.container:hover {
+    transform: translateY(-8px); /* Sedikit naik lebih tinggi */
+    box-shadow: 0 12px 30px var(--shadow-medium); /* Shadow sedikit lebih jelas saat hover */
+}
+
+/* Heading */
+h1 {
+    font-family: 'Lexend', sans-serif; /* Font untuk judul */
+    color: var(--dark-green);
+    margin-bottom: 30px;
+    font-size: 2.8em; /* Ukuran font lebih besar untuk kesan modern */
+    position: relative;
+    padding-bottom: 10px;
+    letter-spacing: -0.02em; /* Sedikit penyesuaian spasi huruf */
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px; /* Ukuran garis bawah lebih pendek untuk minimalis */
+    height: 3px; /* Garis lebih tipis */
+    background-color: var(--primary-green);
+    border-radius: 1.5px; /* Sedikit membulat */
+}
+
+/* Form Styling */
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500; /* Sedikit lebih ringan */
+    color: var(--text-medium);
+    font-size: 0.95em; /* Ukuran font label sedikit lebih kecil */
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 14px 18px; /* Padding sedikit lebih besar */
+    margin-bottom: 25px; /* Margin bawah sedikit lebih besar */
+    border: 1px solid var(--border-light); /* Border sangat halus */
+    border-radius: 6px; /* Sudut lebih lembut */
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15); /* Shadow fokus lebih transparan */
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px; /* Tinggi minimum sedikit lebih besar */
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: var(--text-medium);
+}
+
+/* Button Styling */
+button[type="submit"] {
+    background-color: var(--primary-green);
+    color: var(--white);
+    padding: 14px 28px; /* Padding tombol lebih besar */
+    border: none;
+    border-radius: 6px; /* Sudut lebih lembut */
+    font-size: 1.05em; /* Ukuran font tombol sedikit disesuaikan */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 15px var(--shadow-light); /* Shadow tombol lebih halus */
+}
+
+button[type="submit"]:hover {
+    background-color: var(--dark-green);
+    transform: translateY(-3px); /* Efek naik sedikit lebih banyak */
+    box-shadow: 0 8px 20px var(--shadow-medium); /* Shadow tombol lebih jelas saat hover */
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+/* Message Area */
+#message {
+    margin-top: 30px; /* Margin atas lebih besar */
+    padding: 15px;
+    border-radius: 6px;
+    font-weight: 500; /* Font lebih ringan */
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-light); /* Shadow pada pesan */
+}
+
+/* Message success/error states */
+#message.success {
+    background-color: var(--light-green);
+    color: var(--dark-green);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#message.error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px; /* Padding sedikit berkurang */
+        border-radius: 6px;
+    }
+
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 25px;
+    }
+
+    h1::after {
+        width: 50px;
+        height: 2px;
+    }
+
+    label {
+        font-size: 0.9em;
+    }
+
+    input[type="text"],
+    textarea,
+    button[type="submit"] {
+        font-size: 0.95em;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    #message {
+        padding: 12px;
+        font-size: 0.85em;
+        margin-top: 25px;
+    }
+}
+
+/* Media query untuk layar yang lebih kecil lagi (misalnya 400px) */
+@media (max-width: 400px) {
+    body {
+        padding: 15px;
+    }
+    .container {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    input[type="text"],
+    textarea,
+    button[type="submit"] {
+        margin-bottom: 15px;
+    }
+}

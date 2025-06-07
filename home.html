@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Jurnal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Reset CSS dasar */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+      background: linear-gradient(135deg, #a8e063, #56ab2f); /* Gradien latar belakang yang serasi */
+      display: flex;
+      flex-direction: column; /* Konten disusun dalam kolom */
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden; /* Mencegah scroll horizontal */
+      position: relative;
+      color: #333; /* Warna teks default yang lebih gelap */
+    }
+
+    /* Efek animasi latar belakang yang sama */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.05);
+      transform: rotate(45deg);
+      animation: backgroundAnimation 20s infinite linear;
+      z-index: 0;
+    }
+
+    @keyframes backgroundAnimation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .dashboard-container {
+      background-color: rgba(255, 255, 255, 0.95); /* Sedikit transparan agar latar belakang terlihat */
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      width: 100%;
+      max-width: 960px; /* Lebar maksimum sedikit ditingkatkan */
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease-in-out;
+      margin: auto; /* Memastikan center di layar yang sangat lebar */
+    }
+
+    .dashboard-container:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      font-size: 3rem; /* Ukuran font lebih besar */
+      color: #2e7d32;
+      margin-bottom: 15px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: #a8e063;
+      border-radius: 2px;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #555;
+      margin-bottom: 40px;
+    }
+
+    .stat-box {
+      display: flex;
+      justify-content: center; /* Menggunakan center agar kartu selalu di tengah */
+      flex-wrap: wrap;
+      gap: 25px; /* Jarak antar kartu */
+      margin-top: 30px;
+    }
+
+    .card {
+      background: #e8f5e9; /* Warna latar belakang kartu yang lebih lembut */
+      border-radius: 12px; /* Sudut lebih membulat */
+      color: #333;
+      width: calc(33.333% - 25px); /* Menyesuaikan lebar kartu untuk 3 kolom dengan gap */
+      min-width: 280px; /* Lebar minimum untuk kartu agar tidak terlalu kecil */
+      padding: 30px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center; /* Memastikan teks di tengah kartu */
+    }
+
+    .card:hover {
+      transform: translateY(-8px); /* Naik lebih tinggi saat hover */
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); /* Bayangan lebih gelap saat hover */
+    }
+
+    .card h3 {
+      font-size: 1.8rem; /* Ukuran judul kartu lebih besar */
+      color: #2e7d32;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Memastikan judul kartu dan ikon di tengah */
+      text-align: center;
+      white-space: nowrap; /* Mencegah teks judul kartu pecah ke baris baru */
+    }
+
+    .card h3 i {
+      margin-right: 10px;
+      font-size: 2rem; /* Ukuran ikon judul */
+      color: #4CAF50;
+    }
+
+    .card .count-display {
+      font-size: 2.8em; /* Ukuran font angka lebih besar */
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .card a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      width: 100%; /* Tombol memenuhi lebar kartu */
+    }
+
+    .card a:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+      text-decoration: none; /* Hilangkan underline saat hover */
+    }
+
+    .card a i {
+      margin-right: 8px;
+    }
+
+    /* --- Media Queries for Responsiveness --- */
+
+    /* Layar Besar (Desktop) - default styles are for this */
+    @media (min-width: 1200px) {
+      .dashboard-container {
+        max-width: 1100px; /* Lebar maksimum yang lebih besar untuk layar yang sangat lebar */
+      }
+      .card {
+        width: calc(33.333% - 25px); /* Tetap 3 kolom dengan gap */
+      }
+    }
+
+
+    /* Tablet (768px - 1024px) */
+    @media (max-width: 1024px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      .tagline {
+        font-size: 1.1rem;
+      }
+      .card {
+        width: calc(50% - 25px); /* Dua kolom pada tablet */
+        min-width: 320px; /* Biarkan kartu sedikit lebih besar di tablet */
+      }
+      .stat-box {
+        gap: 20px; /* Kurangi gap sedikit */
+      }
+    }
+
+    /* Ponsel (<= 767px) */
+    @media (max-width: 767px) {
+      .dashboard-container {
+        padding: 25px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h1 i {
+        font-size: 1.8rem;
+      }
+      .tagline {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
+      }
+      .stat-box {
+        flex-direction: column; /* Satu kolom pada ponsel */
+        align-items: center; /* Tengah secara horizontal */
+        gap: 15px; /* Jarak antar kartu saat satu kolom */
+      }
+      .card {
+        width: 90%; /* Hampir memenuhi lebar layar, dengan padding body 20px */
+        min-width: unset; /* Hapus min-width */
+        padding: 25px;
+      }
+      .card h3 {
+        font-size: 1.5rem;
+      }
+      .card h3 i {
+        font-size: 1.7rem;
+      }
+      .card .count-display {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+      }
+      .card a {
+        font-size: 0.95rem;
+        padding: 10px 15px;
+      }
+    }
+
+    /* Ponsel Sangat Kecil (<= 480px) */
+    @media (max-width: 480px) {
+      .dashboard-container {
+        padding: 20px;
+        border-radius: 10px; /* Sudut sedikit lebih kecil */
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+      }
+      h1 i {
+        font-size: 1.6rem;
+      }
+      .tagline {
+        font-size: 0.85rem;
+        margin-bottom: 25px;
+      }
+      .card {
+        width: 100%; /* Memenuhi lebar penuh */
+        padding: 20px;
+      }
+      .card h3 {
+        font-size: 1.3rem;
+      }
+      .card h3 i {
+        font-size: 1.5rem;
+      }
+      .card .count-display {
+        font-size: 1.8em;
+      }
+      .card a {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1><i class="fas fa-home"></i> Selamat Datang di Dashboard</h1>
+    <p class="tagline">Kelola jurnal dan pengguna Anda dengan mudah.</p>
+
+    <div class="stat-box">
+      <div class="card">
+        <h3><i class="fas fa-file-alt"></i> Jumlah Jurnal</h3>
+        <p class="count-display" id="jurnalCount">0</p>
+        <a href="index.html"><i class="fas fa-eye"></i> Lihat Daftar Jurnal</a>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-users"></i> Jumlah Pengguna</h3>
+        <p class="count-display" id="userCount">0</p>
+        <a href="users.html"><i class="fas fa-user-cog"></i> Kelola Pengguna</a>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-user-circle"></i> Profil Saya</h3>
+        <p class="count-display">--</p> <a href="profile.html"><i class="fas fa-id-card"></i> Lihat/Edit Profil</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fungsi untuk mengambil data dan menampilkannya
+    async function fetchData(url, elementId, suffix = '') {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`Gagal mengambil data dari ${url}`);
+        }
+        const data = await res.json();
+        const count = Array.isArray(data) ? data.length : 0; // Pastikan data adalah array
+        document.getElementById(elementId).innerText = count + suffix;
+      } catch (err) {
+        console.error(err);
+        document.getElementById(elementId).innerText = 'Error';
+      }
+    }
+
+    // Fetch jumlah jurnal
+    fetchData('http://localhost:3000/api/journals', 'jurnalCount', ' jurnal');
+
+    // Fetch jumlah user
+    fetchData('http://localhost:3000/api/users', 'userCount', ' pengguna');
+  </script>
+</body>
+</html>
