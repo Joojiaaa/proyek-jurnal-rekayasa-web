@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Penulis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+  <h1>Tambah Penulis</h1>
+  <form id="authorForm" enctype="multipart/form-data">
+    <label>Nama:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Bio:</label><br>
+    <textarea name="bio"></textarea><br><br>
+
+    <label>Foto:</label><br>
+    <input type="file" name="photo" accept="image/*"><br><br>
+
+    <button type="submit">Simpan</button>
+  </form>
+
+  <div id="message"></div>
+
+  <script>
+    document.getElementById('authorForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('http://localhost:3000/api/authors', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          document.getElementById('message').innerText = '✅ Penulis berhasil ditambahkan';
+          form.reset();
+        } else {
+          document.getElementById('message').innerText = '❌ Gagal: ' + result.error;
+        }
+      } catch (error) {
+        document.getElementById('message').innerText = '❌ Gagal koneksi ke server';
+      }
+    });
+  </script>
+</body>
+</html>

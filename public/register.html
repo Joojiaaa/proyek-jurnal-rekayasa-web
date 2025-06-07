@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registrasi Akun</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #b2e0a4;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4fa73d;
+    }
+
+    .login-link {
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    .login-link a {
+      color: #4fa73d;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Daftar Akun Baru</h2>
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Nama" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <select id="role" required>
+        <option value="">Pilih peran...</option>
+        <option value="admin">Admin</option>
+        <option value="reviewer">Reviewer</option>
+        <option value="author">Author</option>
+      </select>
+      <button type="submit">Daftar</button>
+    </form>
+    <div class="login-link">
+      Sudah punya akun? <a href="login.html">Masuk di sini</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      if (!name || !email || !password || !role) {
+        alert('Semua field harus diisi!');
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Format email tidak valid!');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Password minimal 6 karakter!');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Kirim cookies untuk sesi
+          body: JSON.stringify({ name, email, password, role })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert('Gagal registrasi: ' + (data.error || 'Terjadi kesalahan'));
+          return;
+        }
+
+        alert('Registrasi berhasil! Silakan login.');
+        window.location.href = 'login.html';
+      } catch (err) {
+        alert('Kesalahan jaringan: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
