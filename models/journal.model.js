@@ -39,14 +39,10 @@ const Journal = sequelize.define('Journal', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  bidang: {
-    type: DataTypes.STRING,
-    allowNull: true, // atau false, kalau ingin wajib diisi
-  }
 }, {
   tableName: 'journals',
   timestamps: false,
-  underscored: true,
+  underscored: true, // jika suatu saat tambahkan timestamps, ini akan buat created_at & updated_at
 });
 
-module.exports = Journal;
+module.exports = Journal;
