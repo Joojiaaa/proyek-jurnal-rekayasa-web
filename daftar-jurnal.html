@@ -37,10 +37,6 @@
         <input type="text" id="authors" placeholder="Nama penulis (pisahkan dengan koma)" required />
       </div>
       <div class="form-group">
-        <label for="field">Bidang:</label>
-        <input type="text" id="field" placeholder="Bidang Studi (contoh: Ilmu Komputer, Kedokteran)" required />
-      </div>
-      <div class="form-group">
         <label for="publication_date">Tanggal Publikasi:</label>
         <input type="date" id="publication_date" required />
       </div>
@@ -50,11 +46,11 @@
       </div>
       <div class="form-group">
         <label for="doi">DOI:</label>
-        <input type="text" id="doi" placeholder="DOI (Digital Object Identifier)" required />
+        <input type="text" id="doi" placeholder="DOI (Digital Object Identifier)" />
       </div>
       <div class="form-group">
         <label for="keywords">Kata Kunci:</label>
-        <input type="text" id="keywords" placeholder="Kata kunci (pisahkan dengan koma)" required />
+        <input type="text" id="keywords" placeholder="Kata kunci (pisahkan dengan koma)" />
       </div>
       <div class="form-group">
         <label for="file_url">URL File PDF:</label>
@@ -69,11 +65,8 @@
 
     <div class="filter-controls">
         <input type="text" id="searchInput" placeholder="Cari Judul, Penulis, atau Kata Kunci..." class="search-input">
-        <select id="publisherFilter" class="filter-select" title="Filter Berdasarkan Penerbit">
+        <select id="publisherFilter" class="filter-select">
             <option value="">Filter Berdasarkan Penerbit</option>
-            </select>
-        <select id="fieldFilter" class="filter-select" title="Filter Berdasarkan Bidang">
-            <option value="">Filter Berdasarkan Bidang</option>
             </select>
         <button id="resetFilterBtn" class="btn btn-secondary"><i class="fas fa-redo"></i> Reset Filter</button>
     </div>
@@ -85,7 +78,7 @@
             <th>Judul</th>
             <th>Abstrak</th>
             <th>Penulis</th>
-            <th>Bidang</th> <th>Tanggal</th>
+            <th>Tanggal</th>
             <th>Penerbit</th>
             <th>DOI</th>
             <th>Kata Kunci</th>
@@ -116,8 +109,8 @@
       // Tambahkan event listeners untuk pencarian dan filter
       document.getElementById('searchInput').addEventListener('keyup', filterJournals);
       document.getElementById('publisherFilter').addEventListener('change', filterJournals);
-      document.getElementById('fieldFilter').addEventListener('change', filterJournals); // Event listener untuk filter bidang
       document.getElementById('resetFilterBtn').addEventListener('click', resetFilters);
+      document.getElementById('journalForm').addEventListener('submit', handleAddOrUpdateJournal); // Unified handler
     });
 
     function showMessage(message, type = 'success') {
@@ -205,18 +198,18 @@
           console.error("Elemen tbody tabel jurnal tidak ditemukan.");
           return;
       }
-      tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px; color: #888;">Memuat jurnal...</td></tr>'; // Ubah colspan
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #888;">Memuat jurnal...</td></tr>';
 
       try {
-        const res = await fetch(API_URL);
-        
+        const res = await fetch(API_URL, { credentials: 'include' }); // Ensure credentials are sent
+
         if (res.status === 401) {
-            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px; color: #a00;">Anda tidak memiliki izin untuk melihat daftar jurnal. Silakan login.</td></tr>'; // Ubah colspan
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #a00;">Anda tidak memiliki izin untuk melihat daftar jurnal. Silakan login.</td></tr>';
             showMessage("Anda tidak memiliki izin untuk melihat daftar jurnal. Silakan login.", 'error');
             return;
         }
         if (res.status === 404) {
-            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px; color: #a00;">Endpoint API jurnal tidak ditemukan (404). Pastikan server berjalan dan URL benar.</td></tr>'; // Ubah colspan
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #a00;">Endpoint API jurnal tidak ditemukan (404). Pastikan server berjalan dan URL benar.</td></tr>';
             showMessage("Endpoint API jurnal tidak ditemukan (404).", 'error');
             return;
         }
@@ -227,12 +220,11 @@
 
         allJournals = await res.json(); // Simpan semua data jurnal
         populatePublisherFilter(allJournals); // Isi dropdown penerbit
-        populateFieldFilter(allJournals); // Isi dropdown bidang
         displayJournals(allJournals); // Tampilkan semua jurnal awalnya
 
       } catch (error) {
         console.error('Error fetching journals:', error);
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 20px; color: #a00;">Error: ${error.message}</td></tr>`; // Ubah colspan
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px; color: #a00;">Error: ${error.message}</td></tr>`;
         showMessage(`Error memuat jurnal: ${error.message}`, 'error');
       }
     }
@@ -243,7 +235,7 @@
         tbody.innerHTML = ''; // Kosongkan tabel
 
         if (journalsToDisplay.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px; color: #666;">Tidak ada jurnal yang cocok dengan kriteria pencarian/filter.</td></tr>'; // Ubah colspan
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 20px; color: #666;">Tidak ada jurnal yang cocok dengan kriteria pencarian/filter.</td></tr>';
             return;
         }
 
@@ -254,24 +246,24 @@
                 <td>${journal.title}</td>
                 <td>${journal.abstract}</td>
                 <td>${journal.authors}</td>
-                <td>${journal.field || '-'}</td> <td>${journal.publication_date}</td>
+                <td>${journal.publication_date}</td>
                 <td>${journal.publisher}</td>
                 <td>${journal.doi || '-'}</td>
                 <td>${journal.keywords || '-'}</td>
                 <td><a href="${journal.file_url}" target="_blank" title="Lihat File PDF"><i class="fas fa-file-pdf"></i></a></td>
                 <td class="action-buttons">
-                    <button class="btn btn-warning" data-id="${journal.id}"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn btn-danger" data-id="${journal.id}"><i class="fas fa-trash-alt"></i> Hapus</button>
+                    <button class="btn btn-warning edit-btn" data-id="${journal.id}"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger delete-btn" data-id="${journal.id}"><i class="fas fa-trash-alt"></i> Hapus</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
 
-        // Attach event listeners for edit and delete buttons
-        document.querySelectorAll('.btn-warning').forEach(button => {
-            button.addEventListener('click', (e) => editJournal(e.currentTarget.dataset.id));
+        // Attach event listeners for edit and delete buttons (using delegation for efficiency)
+        tbody.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', (e) => openEditModal(e.currentTarget.dataset.id));
         });
-        document.querySelectorAll('.btn-danger').forEach(button => {
+        tbody.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', (e) => deleteJournal(e.currentTarget.dataset.id));
         });
     }
@@ -296,44 +288,21 @@
         });
     }
 
-    // Fungsi untuk mengisi dropdown filter bidang
-    function populateFieldFilter(journals) {
-        const fieldFilter = document.getElementById('fieldFilter');
-        fieldFilter.innerHTML = '<option value="">Filter Berdasarkan Bidang</option>'; // Reset
-
-        const fields = new Set();
-        journals.forEach(journal => {
-            if (journal.field) {
-                fields.add(journal.field);
-            }
-        });
-
-        Array.from(fields).sort().forEach(field => {
-            const option = document.createElement('option');
-            option.value = field;
-            option.textContent = field;
-            fieldFilter.appendChild(option);
-        });
-    }
-
-
     // Fungsi untuk memfilter jurnal berdasarkan input pencarian dan filter penerbit
     function filterJournals() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const selectedPublisher = document.getElementById('publisherFilter').value;
-        const selectedField = document.getElementById('fieldFilter').value; // Ambil nilai filter bidang
 
         let filteredJournals = allJournals.filter(journal => {
-            const matchesSearch = 
+            const matchesSearch =
                 journal.title.toLowerCase().includes(searchTerm) ||
                 journal.authors.toLowerCase().includes(searchTerm) ||
                 (journal.keywords && journal.keywords.toLowerCase().includes(searchTerm)) ||
-                (journal.field && journal.field.toLowerCase().includes(searchTerm)); // Tambahkan pencarian berdasarkan bidang
+                (journal.abstract && journal.abstract.toLowerCase().includes(searchTerm)); // Include abstract in search
 
             const matchesPublisher = selectedPublisher === "" || journal.publisher === selectedPublisher;
-            const matchesField = selectedField === "" || journal.field === selectedField; // Filter berdasarkan bidang
 
-            return matchesSearch && matchesPublisher && matchesField;
+            return matchesSearch && matchesPublisher;
         });
 
         displayJournals(filteredJournals);
@@ -343,10 +312,106 @@
     function resetFilters() {
         document.getElementById('searchInput').value = '';
         document.getElementById('publisherFilter').value = ''; // Reset dropdown
-        document.getElementById('fieldFilter').value = ''; // Reset dropdown bidang
         displayJournals(allJournals); // Tampilkan kembali semua jurnal
     }
 
+    // --- Modal for Editing and Adding Jurnal ---
+    // Instead of prompt(), use a modal for a better user experience
+
+    let currentJournalId = null; // To store the ID of the journal being edited
+
+    function setupJournalFormForEdit(journal) {
+      document.getElementById('title').value = journal.title;
+      document.getElementById('abstract').value = journal.abstract;
+      document.getElementById('authors').value = journal.authors;
+      document.getElementById('publication_date').value = journal.publication_date;
+      document.getElementById('publisher').value = journal.publisher;
+      document.getElementById('doi').value = journal.doi || '';
+      document.getElementById('keywords').value = journal.keywords || '';
+      document.getElementById('file_url').value = journal.file_url;
+      document.querySelector('.form-section h2').innerHTML = '<i class="fas fa-edit"></i> Edit Jurnal';
+      document.querySelector('#journalForm button[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+    }
+
+    function setupJournalFormForAdd() {
+      document.getElementById('journalForm').reset();
+      document.querySelector('.form-section h2').innerHTML = '<i class="fas fa-plus-circle"></i> Tambah Jurnal Baru';
+      document.querySelector('#journalForm button[type="submit"]').innerHTML = '<i class="fas fa-plus"></i> Tambah Jurnal';
+    }
+
+    async function openEditModal(id) {
+        currentJournalId = id; // Set the ID of the journal being edited
+        try {
+            const res = await fetch(`${API_URL}/${id}`, { credentials: 'include' });
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Gagal mengambil data jurnal untuk diedit: ${res.status} - ${errorText}`);
+            }
+            const existingJournal = await res.json();
+            setupJournalFormForEdit(existingJournal);
+            // Scroll to the form section
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error fetching existing journal for edit:', error);
+            showMessage('Gagal memuat data jurnal untuk diedit: ' + error.message, 'error');
+        }
+    }
+
+    async function handleAddOrUpdateJournal(e) {
+      e.preventDefault();
+
+      const journalData = {
+        title: document.getElementById('title').value.trim(),
+        abstract: document.getElementById('abstract').value.trim(),
+        authors: document.getElementById('authors').value.trim(),
+        publication_date: document.getElementById('publication_date').value,
+        publisher: document.getElementById('publisher').value.trim(),
+        doi: document.getElementById('doi').value.trim(),
+        keywords: document.getElementById('keywords').value.trim(),
+        file_url: document.getElementById('file_url').value.trim()
+      };
+
+      if (Object.values(journalData).some(val => val === '' && val !== journalData.doi && val !== journalData.keywords)) {
+          showMessage("Pastikan semua kolom yang wajib diisi sudah terisi (kecuali DOI dan Kata Kunci).", 'error');
+          return;
+      }
+
+      try {
+        let res;
+        if (currentJournalId) { // If currentJournalId is set, it's an edit operation
+          res = await fetch(`${API_URL}/${currentJournalId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(journalData),
+            credentials: 'include'
+          });
+        } else { // Otherwise, it's an add operation
+          res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(journalData),
+            credentials: 'include'
+          });
+        }
+
+        if (res.status === 401 || res.status === 403) {
+            throw new Error('Anda tidak memiliki izin untuk melakukan aksi ini.');
+        }
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Gagal ${currentJournalId ? 'memperbarui' : 'menambah'} jurnal: ${res.status} - ${errorText}`);
+        }
+
+        showMessage(`Jurnal berhasil di${currentJournalId ? 'perbarui' : 'tambahkan'}!`, 'success');
+        document.getElementById('journalForm').reset();
+        currentJournalId = null; // Reset for next operation
+        setupJournalFormForAdd(); // Reset form for adding new journal
+        fetchJournals(); // Muat ulang data
+      } catch (error) {
+        console.error(`Error ${currentJournalId ? 'editing' : 'adding'} journal:`, error);
+        showMessage(`Error ${currentJournalId ? 'mengedit' : 'menambah'} jurnal: ${error.message}`, 'error');
+      }
+    }
 
     // Hapus jurnal
     async function deleteJournal(id) {
@@ -372,114 +437,6 @@
         showMessage('Error menghapus jurnal: ' + error.message, 'error');
       }
     }
-
-    // Mengedit jurnal (menggunakan prompt)
-    async function editJournal(id) {
-        // Fetch existing journal data to pre-fill prompts
-        let existingJournal;
-        try {
-            const res = await fetch(`${API_URL}/${id}`, { credentials: 'include' });
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Gagal mengambil data jurnal untuk diedit: ${res.status} - ${errorText}`);
-            }
-            existingJournal = await res.json();
-        } catch (error) {
-            console.error('Error fetching existing journal for edit:', error);
-            showMessage('Gagal memuat data jurnal untuk diedit: ' + error.message, 'error');
-            return;
-        }
-
-        const title = prompt("Judul:", existingJournal.title);
-        if (title === null) return;
-        const abstract = prompt("Abstrak:", existingJournal.abstract);
-        if (abstract === null) return;
-        const authors = prompt("Penulis (pisahkan dengan koma):", existingJournal.authors);
-        if (authors === null) return;
-        const field = prompt("Bidang:", existingJournal.field || ''); // Tambahkan prompt untuk bidang
-        if (field === null) return;
-        const publication_date = prompt("Tanggal Publikasi (YYYY-MM-DD):", existingJournal.publication_date);
-        if (publication_date === null) return;
-        const publisher = prompt("Penerbit:", existingJournal.publisher);
-        if (publisher === null) return;
-        const doi = prompt("DOI:", existingJournal.doi || '');
-        if (doi === null) return;
-        const keywords = prompt("Kata Kunci (pisahkan dengan koma):", existingJournal.keywords || '');
-        if (keywords === null) return;
-        const file_url = prompt("URL File PDF:", existingJournal.file_url);
-        if (file_url === null) return;
-
-
-        if (!title || !abstract || !authors || !field || !publication_date || !publisher || !doi || !keywords || !file_url) { // Validasi bidang baru
-            showMessage("Semua field harus diisi.", 'error');
-            return;
-        }
-
-        const updatedData = { title, abstract, authors, field, publication_date, publisher, doi, keywords, file_url }; // Sertakan bidang baru
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedData),
-                credentials: 'include'
-            });
-
-            if (res.status === 401 || res.status === 403) {
-                throw new Error('Anda tidak memiliki izin untuk memperbarui jurnal ini.');
-            }
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error('Gagal memperbarui jurnal: ' + errorText);
-            }
-            showMessage('Jurnal berhasil diperbarui!', 'success');
-            fetchJournals(); // Muat ulang data setelah pembaruan
-        } catch (error) {
-            console.error('Error editing journal:', error);
-            showMessage('Error mengedit jurnal: ' + error.message, 'error');
-        }
-    }
-
-    // Tambah jurnal baru
-    document.getElementById('journalForm').addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const journalData = {
-        title: document.getElementById('title').value.trim(),
-        abstract: document.getElementById('abstract').value.trim(),
-        authors: document.getElementById('authors').value.trim(),
-        field: document.getElementById('field').value.trim(), // Ambil nilai bidang
-        publication_date: document.getElementById('publication_date').value,
-        publisher: document.getElementById('publisher').value.trim(),
-        doi: document.getElementById('doi').value.trim(),
-        keywords: document.getElementById('keywords').value.trim(),
-        file_url: document.getElementById('file_url').value.trim()
-      };
-
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(journalData),
-          credentials: 'include'
-        });
-
-        if (res.status === 401 || res.status === 403) {
-            throw new Error('Anda tidak memiliki izin untuk menambah jurnal baru.');
-        }
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error('Gagal menambah jurnal: ' + errorText);
-        }
-
-        showMessage('Jurnal berhasil ditambahkan!', 'success');
-        document.getElementById('journalForm').reset();
-        fetchJournals(); // Muat ulang data setelah penambahan
-      } catch (error) {
-        console.error('Error adding journal:', error);
-        showMessage('Error menambah jurnal: ' + error.message, 'error');
-      }
-    });
   </script>
 </body>
 </html>
