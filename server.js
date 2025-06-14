@@ -1,3 +1,4 @@
+require('dotenv').config(); // tambahkan ini
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
@@ -23,11 +24,12 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/authors', authorRoutes);
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN,
   credentials: true
 }));
+
 app.use(session({
-  secret: 'yourSecretKey',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -36,6 +38,7 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
 
 // Multer for file uploads (specifically for photos)
 const storage = multer.diskStorage({
